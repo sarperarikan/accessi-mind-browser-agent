@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AccessiMind AI Ayarları</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #6f42c1, #5a32a3);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .close-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        
+        .close-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .close-button:focus {
+            outline: 2px solid white;
+            outline-offset: 2px;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 2rem;
+            background: white;
+            max-width: 100%;
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #6f42c1;
+            box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+        }
+        
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .setting-label {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .setting-slider {
+            flex: 2;
+            margin: 0 1rem;
+            width: 200px;
+        }
+        
+        .setting-value {
+            min-width: 50px;
+            text-align: right;
+            font-weight: 600;
+            color: #6f42c1;
+        }
+        
+        .info-text {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6f42c1, #5a32a3);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a32a3, #4b2a8a);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+        
+        .status-indicator {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        .status-connected {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-disconnected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .advanced-options {
+            margin-top: 1.5rem;
+            border-top: 1px solid #dee2e6;
+            padding-top: 1.5rem;
+        }
+        
+        .advanced-options h3 {
+            color: #6f42c1;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        /* Confirmation Dialog */
+        .confirmation-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .confirmation-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .confirmation-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #495057;
+        }
+
+        .confirmation-message {
+            margin-bottom: 2rem;
+            color: #6c757d;
+            line-height: 1.5;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        /* Modified indicator */
+        .modified-indicator {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modified Indicator -->
+    <div class="modified-indicator" id="modified-indicator">
+        ⚠️ Kaydedilmemiş Değişiklikler
+    </div>
+
+    <!-- Confirmation Dialog -->
+    <div class="confirmation-dialog" id="confirmation-dialog">
+        <div class="confirmation-content">
+            <div class="confirmation-title">Kaydedilmemiş Değişiklikler</div>
+            <div class="confirmation-message">
+                Kaydedilmemiş değişiklikleriniz var. Değişiklikler kaybolacak. Devam etmek istediğinizden emin misiniz?
+            </div>
+            <div class="confirmation-buttons">
+                <button class="btn btn-warning" id="confirm-cancel">İptal Et</button>
+                <button class="btn btn-secondary" id="cancel-cancel">Vazgeç</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="header">
+        <div class="header-top">
+            <h1>🤖 AccessiMind AI Ayarları</h1>
+            <button id="close-window-btn" class="close-button" title="Pencereyi Kapat (ESC)" aria-label="Pencereyi kapat">
+                ✕
+            </button>
+        </div>
+        <p>Gemini AI ile akıllı web tarayıcısı deneyimi</p>
+    </div>
+    
+    <div class="content">
+        <form id="settings-form">
+            <!-- Temel Ayarlar -->
+            <div class="form-group">
+                <label for="api-key">Gemini API Anahtarı *</label>
+                <input type="password" id="api-key" placeholder="AIzaSy...">
+                <div class="info-text">Google AI Studio'dan alınan API anahtarı</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="ai-model">AI Modeli</label>
+                <select id="ai-model">
+                    <option value="gemini-2.5-flash">Gemini 2.5 Flash (Önerilen)</option>
+                    <option value="gemini-2.0-pro">Gemini 2.0 Pro (Gelişmiş)</option>
+                    <option value="gemini-1.5-flash">Gemini 1.5 Flash (Dengeli)</option>
+                    <option value="gemini-1.5-pro">Gemini 1.5 Pro (En İyi)</option>
+                </select>
+                <div class="info-text">Model seçimi performans/skalite dengesini etkiler</div>
+            </div>
+            
+            <!-- Gelişmiş Ayarlar -->
+            <div class="advanced-options">
+                <h3>⚙️ Gelişmiş Ayarlar</h3>
+                
+                <div class="setting-row">
+                    <label for="temperature">Yaratıcılık Seviyesi</label>
+                    <input type="range" id="temperature" class="setting-slider" min="0" max="1" step="0.1" value="0.7">
+                    <span class="setting-value" id="temperature-value">0.7</span>
+                </div>
+                
+                <div class="setting-row">
+                    <label for="max-tokens">Maksimum Token</label>
+                    <input type="range" id="max-tokens" class="setting-slider" min="100" max="4096" step="100" value="2048">
+                    <span class="setting-value" id="max-tokens-value">2048</span>
+                </div>
+                
+                <div class="setting-row">
+                    <label for="top-p">Top-P (Çekirdek Örnekleme)</label>
+                    <input type="range" id="top-p" class="setting-slider" min="0" max="1" step="0.1" value="0.8">
+                    <span class="setting-value" id="top-p-value">0.8</span>
+                </div>
+                
+                <div class="setting-row">
+                    <label for="top-k">Top-K (Çekirdek Seçimi)</label>
+                    <input type="range" id="top-k" class="setting-slider" min="1" max="100" step="1" value="40">
+                    <span class="setting-value" id="top-k-value">40</span>
+                </div>
+            </div>
+            
+            <!-- Durum Göstergesi -->
+            <div class="status-indicator" id="status">
+                🤖 AI: Bağlantı yok
+            </div>
+            
+            <!-- Butonlar -->
+            <div class="buttons">
+                <button type="button" class="btn btn-warning" id="factory-reset-btn" aria-label="AI ayarlarını varsayılana sıfırla">AI Ayarlarını Sıfırla</button>
+                <button type="button" class="btn btn-secondary" id="cancel-btn">İptal</button>
+                <button type="button" class="btn btn-primary" id="save-btn">Ayarları Kaydet</button>
+                <button type="button" class="btn btn-warning" id="reset-btn" style="display: none;">Değişiklikleri Sıfırla</button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Global değişkenler
+        let apiKey = '';
+        let modelName = 'gemini-2.5-flash';
+        let settings = {
+            temperature: 0.7,
+            maxOutputTokens: 2048,
+            topP: 0.8,
+            topK: 40
+        };
+        let originalSettings = {};
+        let hasUnsavedChanges = false;
+
+        // Temel kontroller
+        document.getElementById('api-key').addEventListener('input', function() {
+            apiKey = this.value.trim();
+            checkForChanges();
+        });
+        
+        document.getElementById('ai-model').addEventListener('change', function() {
+            modelName = this.value;
+            checkForChanges();
+        });
+        
+        // Slider kontrolleri
+        const sliders = [
+            { id: 'temperature', target: 'temperature-value', factor: 1, decimals: 1 },
+            { id: 'max-tokens', target: 'max-tokens-value', factor: 1, decimals: 0 },
+            { id: 'top-p', target: 'top-p-value', factor: 1, decimals: 1 },
+            { id: 'top-k', target: 'top-k-value', factor: 1, decimals: 0 }
+        ];
+        
+        sliders.forEach(slider => {
+            const element = document.getElementById(slider.id);
+            const target = document.getElementById(slider.target);
+            
+            element.addEventListener('input', function() {
+                const value = parseFloat(this.value);
+                settings[this.id] = value;
+                target.textContent = value.toFixed(slider.decimals);
+                checkForChanges();
+            });
+        });
+
+        // Değişiklik kontrolü fonksiyonu
+        function checkForChanges() {
+            const currentSettings = getCurrentFormSettings();
+            const isModified = JSON.stringify(currentSettings) !== JSON.stringify(originalSettings);
+            
+            hasUnsavedChanges = isModified;
+            
+            // Değişiklik göstergesini güncelle
+            const indicator = document.getElementById('modified-indicator');
+            const resetBtn = document.getElementById('reset-btn');
+            
+            if (isModified) {
+                indicator.style.display = 'block';
+                resetBtn.style.display = 'inline-block';
+            } else {
+                indicator.style.display = 'none';
+                resetBtn.style.display = 'none';
+            }
+        }
+
+        // Mevcut form ayarlarını al
+        function getCurrentFormSettings() {
+            return {
+                apiKey: document.getElementById('api-key').value,
+                model: document.getElementById('ai-model').value,
+                temperature: parseFloat(document.getElementById('temperature').value),
+                maxOutputTokens: parseInt(document.getElementById('max-tokens').value),
+                topP: parseFloat(document.getElementById('top-p').value),
+                topK: parseInt(document.getElementById('top-k').value)
+            };
+        }
+
+        // Ayarları kaydetme butonu
+        document.getElementById('save-btn').addEventListener('click', async function() {
+            const apiKeyInput = document.getElementById('api-key').value.trim();
+            
+            if (!apiKeyInput || apiKeyInput === '••••••••') {
+                alert('Lütfen geçerli bir API anahtarı girin');
+                document.getElementById('api-key').focus();
+                return;
+            }
+            
+            try {
+                // AI Manager ile iletişim kur
+                const AISettings = getCurrentFormSettings();
+                
+                // Electron API ile kaydet
+                if (window.electronAPI) {
+                    const result = await window.electronAPI.saveAISettings(AISettings);
+                    if (result.success) {
+                        saveSuccess();
+                    } else {
+                        alert('Ayarlar kaydedilemedi: ' + result.error);
+                    }
+                } else {
+                    // Fallback: Ana pencereye mesaj gönder
+                    if (window.parent) {
+                        window.parent.postMessage({
+                            type: 'ai-settings-save',
+                            settings: AISettings
+                        }, '*');
+                        saveSuccess();
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Ayarlama hatası:', error);
+                alert('Ayarlar kaydedilemedi: ' + error.message);
+            }
+        });
+        
+        // Başarı kaydetme fonksiyonu
+        function saveSuccess() {
+            document.getElementById('status').className = 'status-indicator status-connected';
+            document.getElementById('status').innerHTML = '🤖 AI: Bağlandı';
+            
+            // Orijinal ayarları güncelle
+            originalSettings = getCurrentFormSettings();
+            hasUnsavedChanges = false;
+            document.getElementById('modified-indicator').style.display = 'none';
+            document.getElementById('reset-btn').style.display = 'none';
+            
+            setTimeout(() => {
+                closeAISettingsWindow(false); // Onay gerekmeden kapat
+            }, 2000);
+        }
+
+        // Sıfırlama butonu
+        document.getElementById('reset-btn').addEventListener('click', function() {
+            resetToOriginalSettings();
+        });
+
+        // Fabrika ayarlarına sıfırlama
+        document.getElementById('factory-reset-btn').addEventListener('click', async function() {
+            const confirmReset = confirm('Tüm AI ayarlarını varsayılana sıfırlamak istediğinizden emin misiniz? API anahtarı temizlenecek.');
+            if (!confirmReset) return;
+
+            try {
+                if (window.electronAPI && window.electronAPI.resetAISettings) {
+                    const result = await window.electronAPI.resetAISettings();
+                    if (result && result.success) {
+                        // Yeni ayarları yükle
+                        const settings = result.settings || { model: 'gemini-2.5-flash', temperature: 0.7, maxOutputTokens: 2048, topP: 0.8, topK: 40, apiKey: '' };
+                        loadAISettings(settings);
+                        originalSettings = settings;
+                        hasUnsavedChanges = false;
+                        document.getElementById('modified-indicator')?.style && (document.getElementById('modified-indicator').style.display = 'none');
+                        document.getElementById('reset-btn').style.display = 'none';
+
+                        // Durum güncellemesi ve ekran okuyucu bildirimi
+                        const sr = document.getElementById('screen-reader-announce');
+                        if (sr) sr.textContent = 'AI ayarları varsayılana sıfırlandı.';
+                        document.getElementById('status').className = 'status-indicator status-disconnected';
+                        document.getElementById('status').innerHTML = '🤖 AI: Bağlantı yok';
+                    } else {
+                        alert('Sıfırlama başarısız: ' + (result?.error || 'Bilinmeyen hata'));
+                    }
+                } else {
+                    // Fallback: sadece formu varsayılan değerlere çek
+                    const defaults = { model: 'gemini-2.5-flash', temperature: 0.7, maxOutputTokens: 2048, topP: 0.8, topK: 40, apiKey: '' };
+                    loadAISettings(defaults);
+                    originalSettings = defaults;
+                    hasUnsavedChanges = false;
+                }
+            } catch (error) {
+                console.error('Varsayılana sıfırlama hatası:', error);
+                alert('Sıfırlama sırasında hata oluştu: ' + error.message);
+            }
+        });
+
+        // Orijinal ayarlara sıfırla
+        function resetToOriginalSettings() {
+            if (JSON.stringify(getCurrentFormSettings()) !== JSON.stringify(originalSettings)) {
+                if (confirm('Değişiklikleri sıfırlamak istediğinizden emin misiniz? Sıfırlandıktan sonra geri alınamaz.')) {
+                    loadAISettings(originalSettings);
+                    hasUnsavedChanges = false;
+                    document.getElementById('modified-indicator').style.display = 'none';
+                    document.getElementById('reset-btn').style.display = 'none';
+                }
+            }
+        }
+        
+        // Close window button
+        document.getElementById('close-window-btn').addEventListener('click', function() {
+            closeAISettingsWithConfirmation();
+        });
+
+        // Cancel button
+        document.getElementById('cancel-btn').addEventListener('click', function() {
+            closeAISettingsWithConfirmation();
+        });
+        
+        // Onayla birlikte pencere kapatma
+        function closeAISettingsWithConfirmation() {
+            if (hasUnsavedChanges) {
+                showConfirmationDialog();
+            } else {
+                closeAISettingsWindow(false);
+            }
+        }
+
+        // Onay diyaloğunu göster
+        function showConfirmationDialog() {
+            const dialog = document.getElementById('confirmation-dialog');
+            dialog.style.display = 'flex';
+        }
+
+        // Onay diyaloğunu gizle
+        function hideConfirmationDialog() {
+            const dialog = document.getElementById('confirmation-dialog');
+            dialog.style.display = 'none';
+        }
+
+        // Onay diyaloğu butonları
+        document.getElementById('confirm-cancel').addEventListener('click', function() {
+            closeAISettingsWindow(true); // Değişiklikleri iptal et
+            hideConfirmationDialog();
+        });
+
+        document.getElementById('cancel-cancel').addEventListener('click', function() {
+            hideConfirmationDialog();
+        });
+        
+        // Pencere kapatma fonksiyonu
+        function closeAISettingsWindow(forceCancel) {
+            if (window.electronAPI) {
+                window.electronAPI.closeAISettings();
+            } else if (window.parent) {
+                window.parent.postMessage({type: 'close-ai-settings'}, '*');
+            } else {
+                // Fallback: pencereyi doğrudan kapat
+                window.close();
+            }
+        }
+        
+        // Başlangıçta mevcut ayarları yükle
+        window.addEventListener('load', async function() {
+            try {
+                // Electron API ile mevcut ayarları iste
+                if (window.electronAPI) {
+                    const settings = await window.electronAPI.requestAISettings();
+                    loadAISettings(settings);
+                    originalSettings = getCurrentFormSettings();
+                } else {
+                    // Fallback: Ana pencereye mevcut ayarları iste
+                    if (window.parent) {
+                        window.parent.postMessage({type: 'request-ai-settings'}, '*');
+                    }
+                }
+            } catch (error) {
+                console.error('Ayarlar yüklenemedi:', error);
+            }
+        });
+        
+        // Ayarları yükleme fonksiyonu
+        function loadAISettings(settings) {
+            // API anahtarı alanını her zaman boş göster (güvenlik ve talep gereği)
+            document.getElementById('api-key').value = '';
+            document.getElementById('ai-model').value = settings.model || 'gemini-2.5-flash';
+            document.getElementById('temperature').value = settings.temperature || 0.7;
+            document.getElementById('max-tokens').value = settings.maxOutputTokens || 2048;
+            document.getElementById('top-p').value = settings.topP || 0.8;
+            document.getElementById('top-k').value = settings.topK || 40;
+            
+            // Değerleri güncelle
+            document.getElementById('temperature-value').textContent = settings.temperature?.toFixed(1) || '0.7';
+            document.getElementById('max-tokens-value').textContent = settings.maxOutputTokens || '2048';
+            document.getElementById('top-p-value').textContent = settings.topP?.toFixed(1) || '0.8';
+            document.getElementById('top-k-value').textContent = settings.topK || '40';
+            
+            // Durumu güncelle
+            if (settings.apiKey) {
+                document.getElementById('status').className = 'status-indicator status-connected';
+                document.getElementById('status').innerHTML = '🤖 AI: Bağlı';
+            } else {
+                document.getElementById('status').className = 'status-indicator status-disconnected';
+                document.getElementById('status').innerHTML = '🤖 AI: Bağlantı yok';
+            }
+        }
+        
+        // IPC iletişimi - Electron API varsa kullan
+        if (window.electronAPI) {
+            window.electronAPI.onMainWindowMessage(function(event) {
+                if (event.type === 'current-ai-settings') {
+                    loadAISettings(event.settings);
+                    originalSettings = getCurrentFormSettings();
+                }
+                
+                if (event.type === 'close-window') {
+                    closeAISettingsWithConfirmation();
+                }
+            });
+        } else {
+            // Fallback: Ana pencere ile iletişim kur
+            window.addEventListener('message', function(event) {
+                if (event.data.type === 'current-ai-settings') {
+                    loadAISettings(event.data.settings);
+                    originalSettings = getCurrentFormSettings();
+                }
+                
+                if (event.data.type === 'close-window') {
+                    closeAISettingsWithConfirmation();
+                }
+            });
+        }
+        
+        // Klavye kısayolları
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+                document.getElementById('save-btn').click();
+            }
+            
+            if (e.key === 'Escape') {
+                closeAISettingsWithConfirmation();
+            }
+
+            if (e.key === 'R' && e.ctrlKey && !e.shiftKey) {
+                document.getElementById('reset-btn').click();
+            }
+
+            if ((e.key === 'R' || e.key === 'r') && e.ctrlKey && e.shiftKey) {
+                document.getElementById('factory-reset-btn').click();
+            }
+        });
+    </script>
+    
+    <!-- Screen Reader Support -->
+    <div id="screen-reader-announce" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+</body>
+</html>
